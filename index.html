@@ -2,45 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>✈️ Chicago Trip Planner – Beautiful & Editable</title>
+<title>✈️ Chicago Trip Planner – Easy Read</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
 :root{
   --bg:#f5f7fa;
-  --card:#ffffffcc;
+  --card:#ffffff;
   --primary:#00b894;
-  --text:#2d3436;
+  --text:#222;
   --accent:#fdcb6e;
 }
 [data-theme="dark"]{
-  --bg:#2d3436;
-  --card:#636e7244;
+  --bg:#1e1e1e;
+  --card:#2d3436;
   --primary:#55efc4;
-  --text:#dfe6e9;
+  --text:#f1f1f1;
 }
-*{margin:0;padding:0;box-sizing:border-box}
-body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;transition:.3s}
+*{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+body{background:var(--bg);color:var(--text);font-size:18px;line-height:1.7;transition:.3s}
 header{padding:2em 1em;text-align:center;background:linear-gradient(135deg,var(--primary),#0984e3);color:#fff}
-h1{font-size:2.2em;letter-spacing:.5px}
-.controls{display:flex;gap:.5em;justify-content:center;flex-wrap:wrap;padding:1em}
-.controls button,input[type=color]{border:none;padding:.5em 1em;border-radius:50px;font-size:.85em;cursor:pointer}
-.controls button{background:#fff;color:var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.1)}
-input[type=color]{width:40px;height:40px;border-radius:50%;overflow:hidden}
-.container{max-width:900px;margin:auto;padding:1em}
-.card{background:var(--card);margin:1em 0;padding:1.5em;border-radius:20px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,.08);transition:.3s}
-.card:hover{transform:translateY(-4px)}
-.card-header{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.1em;margin-bottom:.5em}
-textarea{width:100%;min-height:80px;border:none;background:transparent;resize:vertical;font-size:.95em;color:var(--text)}
-textarea:focus{outline:none}
+h1{font-size:2.5em;letter-spacing:.5px}
+.controls{display:flex;gap:.75em;justify-content:center;flex-wrap:wrap;padding:1em}
+.controls button,input[type=color]{border:none;padding:.75em 1.2em;border-radius:50px;font-size:1rem;cursor:pointer}
+.controls button{background:#fff;color:var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.15)}
+input[type=color]{width:48px;height:48px;border-radius:50%}
+.container{max-width:960px;margin:auto;padding:1em}
+.card{background:var(--card);margin:1.25em 0;padding:2em;border-radius:20px;box-shadow:0 8px 32px rgba(0,0,0,.08);transition:.3s}
+.card:hover{transform:translateY(-5px)}
+.card-header{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.4em;margin-bottom:1em}
+textarea{width:100%;min-height:110px;border:none;background:transparent;font-size:1.1rem;color:var(--text);padding:.5em;border-radius:8px}
+textarea:focus{outline:2px solid var(--primary)}
 .dragging{opacity:.4}
-footer{text-align:center;padding:2em;font-size:.8em;color:var(--text)}
-@media(max-width:600px){h1{font-size:1.8em}.controls{flex-direction:column}}
+footer{text-align:center;padding:2em;font-size:1rem;color:var(--text)}
+@media(max-width:600px){h1{font-size:2.1em}.controls{flex-direction:column}}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>✈️ Chicago 4-Day Planner</h1>
+  <h1>✈️ Chicago 4-Day Planner – Easy Read</h1>
 </header>
 
 <div class="controls">
@@ -55,12 +55,9 @@ footer{text-align:center;padding:2em;font-size:.8em;color:var(--text)}
 
 <div id="planner"></div>
 
-<footer>
-  Drag cards to reorder • All edits auto-save locally • Works offline
-</footer>
+<footer>Drag to reorder • All edits auto-save • Works offline</footer>
 
 <script>
-/* ---------- default data ---------- */
 const defaultCards = [
   {title:"DAY 1 – Wed (Arrival)",content:"🍽️ Late-night: Usmania Fine Dining (open till 11 pm)\n🌟 Goat biryani, chicken boti • 14 mi / 30 min"},
   {title:"DAY 2 – Thu (Embassy + BBQ)",content:"🏛️ Embassy AM\n🍽️ Lunch: Sabri Nihari – beef nihari, BBQ • 14 mi / 30 min\n🎡 Fun: Navy Pier / Lincoln Park Zoo / Millennium Park"},
@@ -68,17 +65,13 @@ const defaultCards = [
   {title:"DAY 4 – Sat (Ali Nihari)",content:"🍽️ Lunch: Ali Nihari – signature beef nihari • 14 mi / 30 min\n🛍️ Devon shopping / Oak St Beach / Museum of Science & Industry"},
   {title:"DAY 5 – Sun (Departure)",content:"🥐 Hotel breakfast → checkout 12 pm\n✈️ Airport: O’Hare 18 mi / 35 min • Midway 12 mi / 25 min"}
 ];
-
 let cards = JSON.parse(localStorage.getItem('chicagoCards')) || [...defaultCards];
-
-/* ---------- render ---------- */
 function render(){
   const box=document.getElementById('planner');
   box.innerHTML='';
   cards.forEach((c,i)=>{
     const div=document.createElement('div');
-    div.className='card';
-    div.draggable=true;
+    div.className='card';div.draggable=true;
     div.innerHTML=`
       <div class="card-header">
         <span contenteditable="true" onblur="saveTitle(${i},this)">${c.title}</span>
@@ -86,65 +79,44 @@ function render(){
       </div>
       <textarea onblur="saveContent(${i},this)">${c.content}</textarea>`;
     box.appendChild(div);
-    dragEvents(div,i);
+    div.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',i);div.classList.add('dragging');});
+    div.addEventListener('dragend',()=>div.classList.remove('dragging'));
+    div.addEventListener('dragover',e=>e.preventDefault());
+    div.addEventListener('drop',e=>{
+      e.preventDefault();const from=+e.dataTransfer.getData('text/plain');const to=i;
+      const item=cards.splice(from,1)[0];cards.splice(to,0,item);save();render();
+    });
   });
 }
-
-/* ---------- CRUD ---------- */
 function save(){localStorage.setItem('chicagoCards',JSON.stringify(cards));}
 function saveTitle(i,el){cards[i].title=el.innerText;save();}
 function saveContent(i,el){cards[i].content=el.value;save();}
 function addCard(){cards.push({title:"New Day",content:"Describe your plans…"});save();render();}
 function deleteCard(i){if(confirm('Delete this day?')){cards.splice(i,1);save();render();}}
 function resetCards(){if(confirm('Reset to original?')){cards=[...defaultCards];save();render();}}
-
-/* ---------- import/export ---------- */
 function exportJSON(){
   const blob=new Blob([JSON.stringify(cards,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='chicago-trip.json';a.click();
 }
 function importJSON(e){
-  const file=e.target.files[0];
-  if(!file)return;
-  const reader=new FileReader();
-  reader.onload=()=>{cards=JSON.parse(reader.result);save();render();};
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();reader.onload=()=>{cards=JSON.parse(reader.result);save();render();};
   reader.readAsText(file);
 }
-
-/* ---------- drag & drop ---------- */
-function dragEvents(el,i){
-  el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',i);el.classList.add('dragging');});
-  el.addEventListener('dragend',()=>el.classList.remove('dragging'));
-  el.addEventListener('dragover',e=>e.preventDefault());
-  el.addEventListener('drop',e=>{
-    e.preventDefault();
-    const from=+e.dataTransfer.getData('text/plain');
-    const to=i;
-    const item=cards.splice(from,1)[0];
-    cards.splice(to,0,item);
-    save();render();
-  });
-}
-
-/* ---------- theme & colour ---------- */
 function toggleTheme(){
-  const body=document.body;
-  body.dataset.theme = body.dataset.theme === 'dark' ? '' : 'dark';
-  localStorage.setItem('theme',body.dataset.theme);
+  document.body.dataset.theme = document.body.dataset.theme==='dark'?'':'dark';
+  localStorage.setItem('theme',document.body.dataset.theme);
 }
 function setColor(c){
   document.documentElement.style.setProperty('--primary',c);
   localStorage.setItem('primaryColor',c);
 }
-(function initTheme(){
+(function(){
   if(localStorage.getItem('theme'))document.body.dataset.theme=localStorage.getItem('theme');
   const c=localStorage.getItem('primaryColor');
   if(c){document.documentElement.style.setProperty('--primary',c);document.querySelector('input[type=color]').value=c;}
 })();
-
-/* ---------- run ---------- */
 render();
 </script>
-
 </body>
 </html>
