@@ -2,118 +2,147 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Chicago Trip Planner – Full Edit Mode</title>
+<title>✈️ Chicago Trip Planner – Beautiful & Editable</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
-  :root{--primary:#00695c;--accent:#ffd54f;--bg:#f8f9fa;--text:#212121;--card:#ffffff}
-  *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  body{background:var(--bg);color:var(--text);line-height:1.6}
-  header{background:linear-gradient(135deg,var(--primary),#004d40);color:#fff;text-align:center;padding:1em}
-  header h1{font-size:1.8em}
-  .container{max-width:900px;margin:auto;padding:1em}
-  .day{background:var(--card);margin:1em 0;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:1em}
-  .day-header{background:var(--primary);color:#fff;padding:.5em .8em;border-radius:8px 8px 0 0;margin:-1em -1em 1em -1em;cursor:grab;font-weight:600}
-  textarea,input[type=text],input[type=time]{width:100%;margin:.2em 0;padding:.4em;border:1px solid #ccc;border-radius:4px;font-size:.9em}
-  textarea{resize:vertical;min-height:60px}
-  button{background:var(--primary);color:#fff;border:none;padding:.4em .8em;border-radius:4px;margin:.2em;font-size:.8em;cursor:pointer}
-  .actions{display:flex;gap:.5em;flex-wrap:wrap;margin:.5em 0}
-  #importExport{margin-top:1em}
-  .dragging{opacity:.4}
+:root{
+  --bg:#f5f7fa;
+  --card:#ffffffcc;
+  --primary:#00b894;
+  --text:#2d3436;
+  --accent:#fdcb6e;
+}
+[data-theme="dark"]{
+  --bg:#2d3436;
+  --card:#636e7244;
+  --primary:#55efc4;
+  --text:#dfe6e9;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;transition:.3s}
+header{padding:2em 1em;text-align:center;background:linear-gradient(135deg,var(--primary),#0984e3);color:#fff}
+h1{font-size:2.2em;letter-spacing:.5px}
+.controls{display:flex;gap:.5em;justify-content:center;flex-wrap:wrap;padding:1em}
+.controls button,input[type=color]{border:none;padding:.5em 1em;border-radius:50px;font-size:.85em;cursor:pointer}
+.controls button{background:#fff;color:var(--primary);box-shadow:0 2px 6px rgba(0,0,0,.1)}
+input[type=color]{width:40px;height:40px;border-radius:50%;overflow:hidden}
+.container{max-width:900px;margin:auto;padding:1em}
+.card{background:var(--card);margin:1em 0;padding:1.5em;border-radius:20px;backdrop-filter:blur(10px);box-shadow:0 8px 32px rgba(0,0,0,.08);transition:.3s}
+.card:hover{transform:translateY(-4px)}
+.card-header{display:flex;justify-content:space-between;align-items:center;font-weight:700;font-size:1.1em;margin-bottom:.5em}
+textarea{width:100%;min-height:80px;border:none;background:transparent;resize:vertical;font-size:.95em;color:var(--text)}
+textarea:focus{outline:none}
+.dragging{opacity:.4}
+footer{text-align:center;padding:2em;font-size:.8em;color:var(--text)}
+@media(max-width:600px){h1{font-size:1.8em}.controls{flex-direction:column}}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>Chicago 4-Day Planner – FULL EDIT MODE</h1>
+  <h1>✈️ Chicago 4-Day Planner</h1>
 </header>
 
-<div class="container">
-  <div class="actions">
-    <button onclick="addDay()">➕ Add Day</button>
-    <button onclick="resetAll()">🔄 Reset</button>
-    <button onclick="downloadJSON()">📥 Export</button>
-    <input type="file" id="upload" accept=".json" onchange="importJSON(event)" style="display:none">
-    <button onclick="document.getElementById('upload').click()">📤 Import</button>
-  </div>
-  <div id="planner"></div>
+<div class="controls">
+  <button onclick="addCard()">➕ Add Day</button>
+  <button onclick="resetCards()">🔄 Reset</button>
+  <button onclick="exportJSON()">📥 Export</button>
+  <input type="file" id="fileInput" accept=".json" onchange="importJSON(event)" hidden>
+  <button onclick="fileInput.click()">📤 Import</button>
+  <button onclick="toggleTheme()">🌗 Theme</button>
+  Colour&nbsp;<input type="color" value="#00b894" oninput="setColor(this.value)">
 </div>
 
+<div id="planner"></div>
+
+<footer>
+  Drag cards to reorder • All edits auto-save locally • Works offline
+</footer>
+
 <script>
-const defaultData = [
-  {title:"DAY 1 – Wednesday (Arrival Night)",text:"Late-night dinner: Usmania Fine Dining\nOpen till 11 pm | Famous: goat biryani, chicken boti\n📍 2253 W Devon Ave • 14 mi / 30 min"},
-  {title:"DAY 2 – Thursday (Embassy + BBQ + Family Fun)",text:"Lunch: Sabri Nihari\n11 am–10 pm | Beef nihari, BBQ platter\n14 mi / 30 min\n\nFamily fun:\nNavy Pier – 2 mi / 8 min\nLincoln Park Zoo – 3 mi / 12 min\nMillennium Park – 1.4 mi / 5 min"},
-  {title:"DAY 3 – Friday (Jummah + Night Cruise)",text:"Breakfast: Pak Sweets & Bakery\n7 am–8 pm | Puri-halwa, lassi\n14 mi / 30 min\n\nJummah: Imam Ali Center 13 mi / 28 min\nor Downtown Islamic Center 0.9 mi / 4 min walk\n\nEarly dinner: Al Bawadi Grill\n11 am–10 pm | Lamb chops, mandi\n19 mi / 35 min\n\nChicago-by-Night Cruise\nBoard 6:45 pm • 1.5 mi / 6 min"},
-  {title:"DAY 4 – Saturday (Ali Nihari + Free Time)",text:"Lunch: Ali Nihari\n11 am–10 pm | Signature beef nihari, maghaz\n14 mi / 30 min\n\nFree options:\nDevon shopping, Oak St Beach 2 mi / 8 min,\nMuseum of Science & Industry 8 mi / 20 min"},
-  {title:"DAY 5 – Sunday (Departure)",text:"Hotel breakfast → checkout 12 pm\nAirport: O’Hare 18 mi / 35 min, Midway 12 mi / 25 min"}
+/* ---------- default data ---------- */
+const defaultCards = [
+  {title:"DAY 1 – Wed (Arrival)",content:"🍽️ Late-night: Usmania Fine Dining (open till 11 pm)\n🌟 Goat biryani, chicken boti • 14 mi / 30 min"},
+  {title:"DAY 2 – Thu (Embassy + BBQ)",content:"🏛️ Embassy AM\n🍽️ Lunch: Sabri Nihari – beef nihari, BBQ • 14 mi / 30 min\n🎡 Fun: Navy Pier / Lincoln Park Zoo / Millennium Park"},
+  {title:"DAY 3 – Fri (Jummah + Cruise)",content:"🥞 Breakfast: Pak Sweets – puri halwa • 14 mi / 30 min\n🕌 Jummah: Imam Ali Center (13 mi) or Downtown Islamic Center (0.9 mi)\n🍽️ Early dinner: Al Bawadi Grill – lamb chops • 19 mi / 35 min\n🚢 Night: Chicago-by-Night River & Lake Cruise 7 pm • 1.5 mi / 6 min"},
+  {title:"DAY 4 – Sat (Ali Nihari)",content:"🍽️ Lunch: Ali Nihari – signature beef nihari • 14 mi / 30 min\n🛍️ Devon shopping / Oak St Beach / Museum of Science & Industry"},
+  {title:"DAY 5 – Sun (Departure)",content:"🥐 Hotel breakfast → checkout 12 pm\n✈️ Airport: O’Hare 18 mi / 35 min • Midway 12 mi / 25 min"}
 ];
 
-let data = JSON.parse(localStorage.getItem('chicagoTrip')) || [...defaultData];
+let cards = JSON.parse(localStorage.getItem('chicagoCards')) || [...defaultCards];
 
+/* ---------- render ---------- */
 function render(){
-  const el=document.getElementById('planner');
-  el.innerHTML='';
-  data.forEach((d,i)=>{
-    const day=document.createElement('div');
-    day.className='day';
-    day.draggable=true;
-    day.innerHTML=`
-      <div class="day-header" draggable="true" data-index="${i}">${d.title}</div>
-      <textarea onblur="save(${i})" id="txt-${i}">${d.text}</textarea>
-      <div class="actions">
-        <button onclick="saveTitle(${i})">💾 Save Title</button>
-        <input type="text" placeholder="New title" id="tit-${i}" value="${d.title}">
-        <button onclick="delDay(${i})">🗑️ Delete</button>
-      </div>`;
-    el.appendChild(day);
-    attachDrag(day,i);
+  const box=document.getElementById('planner');
+  box.innerHTML='';
+  cards.forEach((c,i)=>{
+    const div=document.createElement('div');
+    div.className='card';
+    div.draggable=true;
+    div.innerHTML=`
+      <div class="card-header">
+        <span contenteditable="true" onblur="saveTitle(${i},this)">${c.title}</span>
+        <button onclick="deleteCard(${i})">🗑️</button>
+      </div>
+      <textarea onblur="saveContent(${i},this)">${c.content}</textarea>`;
+    box.appendChild(div);
+    dragEvents(div,i);
   });
 }
 
-function save(i){data[i].text=document.getElementById(`txt-${i}`).value;store();}
-function saveTitle(i){
-  data[i].title=document.getElementById(`tit-${i}`).value;
-  render();store();
-}
-function addDay(){
-  data.push({title:"New Day",text:"Add your plans here…"});
-  render();store();
-}
-function delDay(i){data.splice(i,1);render();store();}
-function store(){localStorage.setItem('chicagoTrip',JSON.stringify(data));}
-function resetAll(){
-  if(confirm('Reset to original itinerary?')){data=[...defaultData];store();render();}
-}
-function downloadJSON(){
-  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
-  const url=URL.createObjectURL(blob);
-  const a=document.createElement('a');a.href=url;a.download='chicago-trip.json';a.click();
+/* ---------- CRUD ---------- */
+function save(){localStorage.setItem('chicagoCards',JSON.stringify(cards));}
+function saveTitle(i,el){cards[i].title=el.innerText;save();}
+function saveContent(i,el){cards[i].content=el.value;save();}
+function addCard(){cards.push({title:"New Day",content:"Describe your plans…"});save();render();}
+function deleteCard(i){if(confirm('Delete this day?')){cards.splice(i,1);save();render();}}
+function resetCards(){if(confirm('Reset to original?')){cards=[...defaultCards];save();render();}}
+
+/* ---------- import/export ---------- */
+function exportJSON(){
+  const blob=new Blob([JSON.stringify(cards,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='chicago-trip.json';a.click();
 }
 function importJSON(e){
   const file=e.target.files[0];
   if(!file)return;
   const reader=new FileReader();
-  reader.onload=()=>{data=JSON.parse(reader.result);store();render();};
+  reader.onload=()=>{cards=JSON.parse(reader.result);save();render();};
   reader.readAsText(file);
 }
 
-// Drag & drop reorder
-function attachDrag(el,i){
-  el.addEventListener('dragstart',e=>{
-    e.dataTransfer.setData('text/plain',i);
-    el.classList.add('dragging');
-  });
+/* ---------- drag & drop ---------- */
+function dragEvents(el,i){
+  el.addEventListener('dragstart',e=>{e.dataTransfer.setData('text/plain',i);el.classList.add('dragging');});
   el.addEventListener('dragend',()=>el.classList.remove('dragging'));
   el.addEventListener('dragover',e=>e.preventDefault());
   el.addEventListener('drop',e=>{
     e.preventDefault();
     const from=+e.dataTransfer.getData('text/plain');
     const to=i;
-    const item=data.splice(from,1)[0];
-    data.splice(to,0,item);
-    store();render();
+    const item=cards.splice(from,1)[0];
+    cards.splice(to,0,item);
+    save();render();
   });
 }
 
+/* ---------- theme & colour ---------- */
+function toggleTheme(){
+  const body=document.body;
+  body.dataset.theme = body.dataset.theme === 'dark' ? '' : 'dark';
+  localStorage.setItem('theme',body.dataset.theme);
+}
+function setColor(c){
+  document.documentElement.style.setProperty('--primary',c);
+  localStorage.setItem('primaryColor',c);
+}
+(function initTheme(){
+  if(localStorage.getItem('theme'))document.body.dataset.theme=localStorage.getItem('theme');
+  const c=localStorage.getItem('primaryColor');
+  if(c){document.documentElement.style.setProperty('--primary',c);document.querySelector('input[type=color]').value=c;}
+})();
+
+/* ---------- run ---------- */
 render();
 </script>
 
