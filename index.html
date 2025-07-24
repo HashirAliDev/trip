@@ -2,136 +2,120 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>4-Day Halal Chicago – FINAL</title>
+<title>Chicago Trip Planner – Full Edit Mode</title>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <style>
   :root{--primary:#00695c;--accent:#ffd54f;--bg:#f8f9fa;--text:#212121;--card:#ffffff}
   *{margin:0;padding:0;box-sizing:border-box;font-family:"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   body{background:var(--bg);color:var(--text);line-height:1.6}
-  header{background:linear-gradient(135deg,var(--primary),#004d40);color:#fff;text-align:center;padding:3em 1em}
-  header h1{font-size:2.4em;letter-spacing:.5px}
-  header p{font-size:1.1em;opacity:.9}
-  .container{max-width:900px;margin:auto;padding:1.5em}
-  .day{background:var(--card);margin:1.5em 0;border-radius:12px;box-shadow:0 4px 18px rgba(0,0,0,.08);overflow:hidden;opacity:0;transform:translateY(30px);animation:fadeUp .6s forwards}
-  .day:nth-child(2){animation-delay:.1s}.day:nth-child(3){animation-delay:.2s}.day:nth-child(4){animation-delay:.3s}.day:nth-child(5){animation-delay:.4s}.day:nth-child(6){animation-delay:.5s}
-  @keyframes fadeUp{to{opacity:1;transform:none}}
-  .day-header{background:var(--primary);color:#fff;padding:1em 1.5em;font-size:1.3em;font-weight:600}
-  .day-body{padding:1.5em}
-  ul{margin-left:1.2em}li{margin:.4em 0}
-  .tag{display:inline-block;margin:.2em .4em .2em 0;padding:.25em .6em;background:var(--accent);color:var(--primary);font-size:.8em;font-weight:600;border-radius:50px}
-  .info{font-size:.9em;color:#555}
-  .prayer-widget{background:#e0f2f1;border-left:5px solid var(--primary);padding:1em;margin:1.5em 0;border-radius:4px}
-  footer{text-align:center;padding:2em 1em;font-size:.85em;color:#666;background:#e0f2f1}
-  @media(max-width:600px){header h1{font-size:2em}.day-header{font-size:1.1em;padding:.8em 1em}.day-body{padding:1em}}
+  header{background:linear-gradient(135deg,var(--primary),#004d40);color:#fff;text-align:center;padding:1em}
+  header h1{font-size:1.8em}
+  .container{max-width:900px;margin:auto;padding:1em}
+  .day{background:var(--card);margin:1em 0;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.1);padding:1em}
+  .day-header{background:var(--primary);color:#fff;padding:.5em .8em;border-radius:8px 8px 0 0;margin:-1em -1em 1em -1em;cursor:grab;font-weight:600}
+  textarea,input[type=text],input[type=time]{width:100%;margin:.2em 0;padding:.4em;border:1px solid #ccc;border-radius:4px;font-size:.9em}
+  textarea{resize:vertical;min-height:60px}
+  button{background:var(--primary);color:#fff;border:none;padding:.4em .8em;border-radius:4px;margin:.2em;font-size:.8em;cursor:pointer}
+  .actions{display:flex;gap:.5em;flex-wrap:wrap;margin:.5em 0}
+  #importExport{margin-top:1em}
+  .dragging{opacity:.4}
 </style>
 </head>
 <body>
 
 <header>
-  <h1>4-Day Halal-Friendly Chicago</h1>
-  <p>SpringHill Suites River North • Wed-Sun • All times from hotel</p>
+  <h1>Chicago 4-Day Planner – FULL EDIT MODE</h1>
 </header>
 
 <div class="container">
-
-  <!-- DAY 1 -->
-  <div class="day">
-    <div class="day-header">DAY 1 – Wednesday (Arrival Night)</div>
-    <div class="day-body">
-      <strong>Usmania Fine Dining</strong><br>
-      <span class="tag">11 am–11 pm</span>
-      <span class="tag">Famous: chicken boti, goat biryani, gajar halwa</span><br>
-      <span class="info">📍 2244 W Devon Ave • 14 mi / 30 min drive</span>
-    </div>
+  <div class="actions">
+    <button onclick="addDay()">➕ Add Day</button>
+    <button onclick="resetAll()">🔄 Reset</button>
+    <button onclick="downloadJSON()">📥 Export</button>
+    <input type="file" id="upload" accept=".json" onchange="importJSON(event)" style="display:none">
+    <button onclick="document.getElementById('upload').click()">📤 Import</button>
   </div>
-
-  <!-- DAY 2 -->
-  <div class="day">
-    <div class="day-header">DAY 2 – Thursday (Embassy + BBQ + Family Fun)</div>
-    <div class="day-body">
-      <strong>Embassy appointment</strong> (location TBD) • morning
-
-      <br><br><strong>Lunch: Sabri Nihari</strong><br>
-      <span class="tag">11 am–10 pm</span>
-      <span class="tag">Beef nihari, mixed BBQ platter, chicken karahi</span><br>
-      <span class="info">📍 2502 W Devon Ave • 14 mi / 30 min</span>
-
-      <br><br><strong>Family Fun (pick one)</strong>
-      <ul>
-        <li><strong>Navy Pier</strong> – 10 am–10 pm, Centennial Wheel, fireworks Thu night • 2 mi / 8 min</li>
-        <li><strong>Lincoln Park Zoo</strong> – FREE, 10 am–5 pm • 3 mi / 12 min</li>
-        <li><strong>Millennium Park</strong> – 6 am–11 pm, Cloud Gate • 1.4 mi / 5 min</li>
-      </ul>
-
-      <br><strong>Dinner back at Usmania Fine Dining</strong> (same as lunch spot)
-    </div>
-  </div>
-
-  <!-- DAY 3 -->
-  <div class="day">
-    <div class="day-header">DAY 3 – Friday (Jummah + Night Cruise)</div>
-    <div class="day-body">
-      <strong>Breakfast: Pak Sweets & Bakery</strong><br>
-      <span class="tag">7 am–8 pm</span>
-      <span class="tag">Puri-halwa combo, chicken samosa, lassi</span><br>
-      <span class="info">📍 2326 W Devon Ave • 14 mi / 30 min</span>
-
-      <br><br><strong>Jummah Prayer (Shia)</strong>
-      <ul>
-        <li><strong>Imam Ali Center</strong> – 6441 N Western Ave • 13 mi / 28 min</li>
-        <li><strong>Downtown Islamic Center</strong> – 231 S State St • 0.9 mi / 4 min walk</li>
-      </ul>
-
-      <br><strong>Early Dinner (before cruise)</strong><br>
-      <strong>Al Bawadi Grill</strong><br>
-      <span class="tag">11 am–10 pm</span>
-      <span class="tag">Lamb chops, mandi rice, kunafa</span><br>
-      <span class="info">📍 7216 W 87th St, Bridgeview • 19 mi / 35 min</span>
-
-      <br><br><strong>Chicago-by-Night River & Lake Cruise</strong><br>
-      <span class="tag">Board 6:45 pm, sail 7–8:30 pm</span><br>
-      <span class="info">📍 Navy Pier or Michigan Ave Bridge • 1.5 mi / 6 min</span>
-    </div>
-  </div>
-
-  <!-- DAY 4 -->
-  <div class="day">
-    <div class="day-header">DAY 4 – Saturday (Ali Nihari + Free Time)</div>
-    <div class="day-body">
-      <strong>Lunch: Ali Nihari</strong><br>
-      <span class="tag">11 am–10 pm</span>
-      <span class="tag">Signature beef nihari, maghaz masala, naan khatai dessert</span><br>
-      <span class="info">📍 2658 W Devon Ave • 14 mi / 30 min</span>
-
-      <br><br><strong>Flexible Afternoon</strong>
-      <ul>
-        <li>Devon Ave shopping (0 min extra)</li>
-        <li>Oak Street Beach – 2 mi / 8 min</li>
-        <li>Museum of Science & Industry – 9:30 am–5:30 pm • 8 mi / 20 min</li>
-        <li>Color Factory Chicago – 10 am–8 pm • 2.5 mi / 10 min</li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- DAY 5 -->
-  <div class="day">
-    <div class="day-header">DAY 5 – Sunday (Departure)</div>
-    <div class="day-body">
-      Hotel breakfast → checkout 12 pm → ride to airport (O’Hare 18 mi / 35 min; Midway 12 mi / 25 min)
-    </div>
-  </div>
-
-  <!-- Prayer Times Widget -->
-  <div class="prayer-widget">
-    <strong>Chicago Prayer Times Today</strong><br>
-    <iframe src="https://www.islamicfinder.org/prayer-widget/4887399/shafi/4/0/13/13" style="border:none;width:100%;height:200px;"></iframe>
-  </div>
-
+  <div id="planner"></div>
 </div>
 
-<footer>
-  All restaurants are HFSAA-certified or verified halal. Safe travels!
-</footer>
+<script>
+const defaultData = [
+  {title:"DAY 1 – Wednesday (Arrival Night)",text:"Late-night dinner: Usmania Fine Dining\nOpen till 11 pm | Famous: goat biryani, chicken boti\n📍 2253 W Devon Ave • 14 mi / 30 min"},
+  {title:"DAY 2 – Thursday (Embassy + BBQ + Family Fun)",text:"Lunch: Sabri Nihari\n11 am–10 pm | Beef nihari, BBQ platter\n14 mi / 30 min\n\nFamily fun:\nNavy Pier – 2 mi / 8 min\nLincoln Park Zoo – 3 mi / 12 min\nMillennium Park – 1.4 mi / 5 min"},
+  {title:"DAY 3 – Friday (Jummah + Night Cruise)",text:"Breakfast: Pak Sweets & Bakery\n7 am–8 pm | Puri-halwa, lassi\n14 mi / 30 min\n\nJummah: Imam Ali Center 13 mi / 28 min\nor Downtown Islamic Center 0.9 mi / 4 min walk\n\nEarly dinner: Al Bawadi Grill\n11 am–10 pm | Lamb chops, mandi\n19 mi / 35 min\n\nChicago-by-Night Cruise\nBoard 6:45 pm • 1.5 mi / 6 min"},
+  {title:"DAY 4 – Saturday (Ali Nihari + Free Time)",text:"Lunch: Ali Nihari\n11 am–10 pm | Signature beef nihari, maghaz\n14 mi / 30 min\n\nFree options:\nDevon shopping, Oak St Beach 2 mi / 8 min,\nMuseum of Science & Industry 8 mi / 20 min"},
+  {title:"DAY 5 – Sunday (Departure)",text:"Hotel breakfast → checkout 12 pm\nAirport: O’Hare 18 mi / 35 min, Midway 12 mi / 25 min"}
+];
+
+let data = JSON.parse(localStorage.getItem('chicagoTrip')) || [...defaultData];
+
+function render(){
+  const el=document.getElementById('planner');
+  el.innerHTML='';
+  data.forEach((d,i)=>{
+    const day=document.createElement('div');
+    day.className='day';
+    day.draggable=true;
+    day.innerHTML=`
+      <div class="day-header" draggable="true" data-index="${i}">${d.title}</div>
+      <textarea onblur="save(${i})" id="txt-${i}">${d.text}</textarea>
+      <div class="actions">
+        <button onclick="saveTitle(${i})">💾 Save Title</button>
+        <input type="text" placeholder="New title" id="tit-${i}" value="${d.title}">
+        <button onclick="delDay(${i})">🗑️ Delete</button>
+      </div>`;
+    el.appendChild(day);
+    attachDrag(day,i);
+  });
+}
+
+function save(i){data[i].text=document.getElementById(`txt-${i}`).value;store();}
+function saveTitle(i){
+  data[i].title=document.getElementById(`tit-${i}`).value;
+  render();store();
+}
+function addDay(){
+  data.push({title:"New Day",text:"Add your plans here…"});
+  render();store();
+}
+function delDay(i){data.splice(i,1);render();store();}
+function store(){localStorage.setItem('chicagoTrip',JSON.stringify(data));}
+function resetAll(){
+  if(confirm('Reset to original itinerary?')){data=[...defaultData];store();render();}
+}
+function downloadJSON(){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');a.href=url;a.download='chicago-trip.json';a.click();
+}
+function importJSON(e){
+  const file=e.target.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{data=JSON.parse(reader.result);store();render();};
+  reader.readAsText(file);
+}
+
+// Drag & drop reorder
+function attachDrag(el,i){
+  el.addEventListener('dragstart',e=>{
+    e.dataTransfer.setData('text/plain',i);
+    el.classList.add('dragging');
+  });
+  el.addEventListener('dragend',()=>el.classList.remove('dragging'));
+  el.addEventListener('dragover',e=>e.preventDefault());
+  el.addEventListener('drop',e=>{
+    e.preventDefault();
+    const from=+e.dataTransfer.getData('text/plain');
+    const to=i;
+    const item=data.splice(from,1)[0];
+    data.splice(to,0,item);
+    store();render();
+  });
+}
+
+render();
+</script>
 
 </body>
 </html>
